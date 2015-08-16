@@ -6,15 +6,15 @@
 case "$1" in
   start)
         echo "Starting bluetooth..."
-        echo "" > /dev/ttySAC1 #Hack for false starts.
+        echo > /dev/ttySAC1 #Hack for false starts.
         #rfkill unblock 0 # Doesn't seem to be necessary. Leave for later updates possibly.
-        /usr/bin/brcm_patchram_plus -d --patchram /lib/firmware/ap6210/bcm20702a.hcd --bd_addr aa:22:33:44:55:66 --no2bytes --tosleep 5000 /dev/ttySAC1 >/dev/null 2>&1 
-        /usr/bin/hciattach /dev/ttySAC1 any
-        /usr/bin/hciconfig hci0 up
+        brcm_patchram_plus -d --patchram /lib/firmware/ap6210/bcm20702a.hcd --bd_addr aa:22:33:44:55:66 --no2bytes --tosleep 5000 /dev/ttySAC1 >/dev/null 2>&1 
+        hciattach /dev/ttySAC1 any
+        hciconfig hci0 up
         ;;
   stop)
         echo -n "Stopping bluetooth..."
-        /usr/bin/hciconfig hci0 down
+        hciconfig hci0 down
         ;;
   restart|reload)
         "$0" stop
