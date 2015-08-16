@@ -1,0 +1,16 @@
+if BR2_INIT_SYSV || BR2_INIT_BUSYBOX
+config BR2_PACKAGE_BROADCOM_BLUETOOTH
+	bool "brcm_patchram_plus"
+    select BR2_PACKAGE_BLUEZ5_UTILS
+
+	help
+      Broadcom utility for loading firmware to 
+      Bluetooth devices.
+
+	  https://code.google.com/p/broadcom-bluetooth/
+endif
+
+if !BR2_INIT_SYSV && !BR2_INIT_BUSYBOX
+comment "brcm_patchram_plus Currently requires a SysV or Busybox init system."
+	depends on !BR2_INIT_SYSV || !BR2_INIT_BUSYBOX
+endif
