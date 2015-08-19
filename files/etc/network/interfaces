@@ -2,6 +2,11 @@
 auto lo
 iface lo inet loopback
 
+auto usb0
+iface usb0 inet manual
+   up /usr/sbin/avahi-autoipd --force-bind -D usb0
+   down /usr/sbin/avahi-autoipd --kill usb0
+
 # wifi add-on board
 auto wlan0
 iface wlan0 inet dhcp
