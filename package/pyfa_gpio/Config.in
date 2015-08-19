@@ -1,0 +1,10 @@
+config BR2_PACKAGE_PYFA_GPIO
+	bool "pyfa_gpio"
+	depends on BR2_PACKAGE_PYTHON
+	help
+	  Simple GPIO interface for FriendlyARM boards.
+
+	  https://github.com/jrspruitt/pyfa_gpio
+
+comment "Requires Python"
+	depends on BR2_PACKAGE_PYTHON

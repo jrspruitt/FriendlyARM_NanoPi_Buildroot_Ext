@@ -1,3 +1,4 @@
 menu "Packages"
 source "$BR2_EXTERNAL/package/broadcom-bluetooth/Config.in"
+source "$BR2_EXTERNAL/package/pyfa_gpio/Config.in"
 endmenu
