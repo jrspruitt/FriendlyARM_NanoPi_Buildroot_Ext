@@ -1,7 +1,7 @@
 #Buildroot external files for FriendlyARM NanoPi#
 
 #Configuration#
-Clone this repo  and [Buildroot](git://git.buildroot.net/buildroot)
+Clone this repo  and [Buildroot](http://git.buildroot.net/buildroot)
 
 In the Buildroot directory run:
 
