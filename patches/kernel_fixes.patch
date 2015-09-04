@@ -1,4 +1,32 @@
-diff -uNr linux-4.x.y/drivers/input/touchscreen/mini2451_1wire_host.c linux-nanopi-v4.1.y/drivers/input/touchscreen/mini2451_1wire_host.c
+--- linux-4.x.y/drivers/net/wireless/bcm4336/dhd_config.c	2015-08-27 22:57:27.000000000 +0200
++++ linux-nanopi-v4.1.y/drivers/net/wireless/bcm4336/dhd_config.c	2015-08-27 23:06:13.997638362 +0200
+@@ -1059,6 +1059,7 @@
+ 	}
+ #endif
+ 
++#ifdef DHD_DEBUG
+ 	/* Process dhd_console_ms */
+ 	memset(pick, 0, MAXSZ_BUF);
+ 	len_val = process_config_vars(bufp, len, pick, "dhd_console_ms=");
+@@ -1066,6 +1067,7 @@
+ 		dhd_console_ms = (int)simple_strtol(pick, NULL, 0);
+ 		printf("%s: dhd_console_ms = 0x%X\n", __FUNCTION__, dhd_console_ms);
+ 	}
++#endif
+ }
+ 
+ void
+--- linux-4.x.y/drivers/net/wireless/bcm4336/Makefile	2015-08-27 22:18:14.000000000 +0200
++++ linux-nanopi-v4.1.y/drivers/net/wireless/bcm4336/Makefile	2015-08-27 22:53:37.661652100 +0200
+@@ -3,7 +3,7 @@
+ #    otherwise please remove it.
+ DHDCFLAGS = -Wall -Wstrict-prototypes -Dlinux -DBCMDRIVER                \
+ 	-DBCMDONGLEHOST -DUNRELEASEDCHIP -DBCMDMA32 -DBCMFILEIMAGE            \
+-	-DDHDTHREAD -DDHD_DEBUG -DSHOW_EVENTS -DBCMDBG                        \
++	-DDHDTHREAD -DSHOW_EVENTS -DBCMDBG                        \
+ 	-DWIFI_ACT_FRAME -DARP_OFFLOAD_SUPPORT                                \
+ 	-DKEEP_ALIVE -DPKT_FILTER_SUPPORT                                     \
+ 	-DEMBEDDED_PLATFORM -DENABLE_INSMOD_NO_FW_LOAD -DPNO_SUPPORT          \
 --- linux-4.x.y/drivers/input/touchscreen/mini2451_1wire_host.c	2015-08-16 11:10:01.677460067 -0700
 +++ linux-nanopi-v4.1.y/drivers/input/touchscreen/mini2451_1wire_host.c	2015-08-16 11:13:45.437462049 -0700
 @@ -40,6 +40,7 @@
@@ -169,18 +197,6 @@ diff -uNr linux-4.x.y/drivers/input/touchscreen/mini2451_1wire_host.c linux-nano
  	return 0;
  
  err_timer:
-@@ -579,6 +573,11 @@
- 	gpio_free(pdata->gpio);
- 
- 	return ret;
-+
-+
-+
-+
-+
- }
- 
- static int ts_1wire_remove(struct platform_device *pdev)
 @@ -597,8 +596,6 @@
  #ifdef CONFIG_PM
  static int ts_1wire_suspend(struct device *dev)
@@ -219,4 +235,16 @@ diff -uNr linux-4.x.y/drivers/input/touchscreen/mini2451_1wire_host.c linux-nano
 -	misc_deregister(&ts_misc);
  	misc_deregister(&bl_misc);
  }
+
+diff -uNr linux-4.x.y/net/wireless/reg.c linux-nanopi-v4.1.y/net/wireless/reg.c
+--- linux-4.x.y/net/wireless/reg.c	2015-08-23 13:02:15.414327565 -0700
++++ linux-nanopi-v4.1.y/net/wireless/reg.c	2015-08-23 12:51:34.002338751 -0700
+@@ -136,7 +136,7 @@
+ static u32 reg_is_indoor_portid;
+ 
+ /* Max number of consecutive attempts to communicate with CRDA  */
+-#define REG_MAX_CRDA_TIMEOUTS 10
++#define REG_MAX_CRDA_TIMEOUTS 0
+ 
+ static u32 reg_crda_timeouts;
  

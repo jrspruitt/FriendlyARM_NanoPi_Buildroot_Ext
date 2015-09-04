@@ -1,0 +1,43 @@
+#!/bin/sh
+#
+# sshd        Starts sshd.
+#
+
+
+start() {
+	echo -n "Starting QAppLauncher: "
+	source /etc/profile.d/qapplauncher.sh
+	if [ ! -f /etc/pointercal ]; then
+		/usr/bin/ts_calibrate >  /dev/null 2>&1
+	fi
+
+	/opt/QAppLauncher & > /dev/null 2>&1 
+	echo "OK"
+}
+stop() {
+	echo -n "Stopping QAppLauncher: "
+	killall QAppLauncher
+	echo "OK"
+}
+restart() {
+	stop
+	start
+}
+
+case "$1" in
+  start)
+	start
+	;;
+  stop)
+	stop
+	;;
+  restart|reload)
+	restart
+	;;
+  *)
+	echo "Usage: $0 {start|stop|restart}"
+	exit 1
+esac
+
+exit $?
+
