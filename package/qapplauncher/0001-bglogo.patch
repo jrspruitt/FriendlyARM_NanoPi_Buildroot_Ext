@@ -1,0 +1,13 @@
+diff --git a/QAppConfig/skins/default/styleSheet.qss b/QAppConfig/skins/default/styleSheet.qss
+index 95e505f..d0f9a77 100644
+--- a/QAppConfig/skins/default/styleSheet.qss
++++ b/QAppConfig/skins/default/styleSheet.qss
+@@ -6,7 +6,7 @@
+ 
+ QAppLaunchControl {
+ 	background-color:rgb(0, 0, 0);
+-    background-image: url(QAppConfig/skins/default/bg.png);
++    background-image: url(/opt/QAppConfig/skins/default/bg.png);
+     background-repeat: no-repeat;
+     background-position: center;
+ }
