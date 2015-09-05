@@ -4,10 +4,10 @@
 #
 ################################################################################
 
-PYFA_GPIO_VERSION = master 
-PYFA_GPIO_SITE = $(call github,jrspruitt,pyfa_gpio,$(PYFA_GPIO_VERSION))
-PYFA_GPIO_SETUP_TYPE = setuptools
-PYFA_GPIO_LICENSE = MIT
-PYFA_GPIO_LICENSE_FILES = LICENCE
+FGPIO_VERSION = master 
+FGPIO_SITE = $(call github,jrspruitt,FriendlyARM_Python_GPIO,$(FGPIO_VERSION))
+FGPIO_SETUP_TYPE = setuptools
+FGPIO_LICENSE = MIT
+FGPIO_LICENSE_FILES = LICENCE
 
 $(eval $(python-package))
