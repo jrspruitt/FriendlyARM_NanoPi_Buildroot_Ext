@@ -1,43 +1,15 @@
---- linux-4.x.y/drivers/net/wireless/bcm4336/dhd_config.c	2015-08-27 22:57:27.000000000 +0200
-+++ linux-nanopi-v4.1.y/drivers/net/wireless/bcm4336/dhd_config.c	2015-08-27 23:06:13.997638362 +0200
-@@ -1059,6 +1059,7 @@
- 	}
- #endif
- 
-+#ifdef DHD_DEBUG
- 	/* Process dhd_console_ms */
- 	memset(pick, 0, MAXSZ_BUF);
- 	len_val = process_config_vars(bufp, len, pick, "dhd_console_ms=");
-@@ -1066,6 +1067,7 @@
- 		dhd_console_ms = (int)simple_strtol(pick, NULL, 0);
- 		printf("%s: dhd_console_ms = 0x%X\n", __FUNCTION__, dhd_console_ms);
- 	}
-+#endif
- }
- 
- void
---- linux-4.x.y/drivers/net/wireless/bcm4336/Makefile	2015-08-27 22:18:14.000000000 +0200
-+++ linux-nanopi-v4.1.y/drivers/net/wireless/bcm4336/Makefile	2015-08-27 22:53:37.661652100 +0200
-@@ -3,7 +3,7 @@
- #    otherwise please remove it.
- DHDCFLAGS = -Wall -Wstrict-prototypes -Dlinux -DBCMDRIVER                \
- 	-DBCMDONGLEHOST -DUNRELEASEDCHIP -DBCMDMA32 -DBCMFILEIMAGE            \
--	-DDHDTHREAD -DDHD_DEBUG -DSHOW_EVENTS -DBCMDBG                        \
-+	-DDHDTHREAD -DSHOW_EVENTS -DBCMDBG                        \
- 	-DWIFI_ACT_FRAME -DARP_OFFLOAD_SUPPORT                                \
- 	-DKEEP_ALIVE -DPKT_FILTER_SUPPORT                                     \
- 	-DEMBEDDED_PLATFORM -DENABLE_INSMOD_NO_FW_LOAD -DPNO_SUPPORT          \
---- linux-4.x.y/drivers/input/touchscreen/mini2451_1wire_host.c	2015-08-16 11:10:01.677460067 -0700
-+++ linux-nanopi-v4.1.y/drivers/input/touchscreen/mini2451_1wire_host.c	2015-08-16 11:13:45.437462049 -0700
+diff -rup linux-nanopi-v4.1.y.orig/drivers/input/touchscreen/mini2451_1wire_host.c linux-nanopi-v4.1.y/drivers/input/touchscreen/mini2451_1wire_host.c
+--- linux-nanopi-v4.1.y.orig/drivers/input/touchscreen/mini2451_1wire_host.c	2015-08-12 01:38:07.000000000 -0700
++++ linux-nanopi-v4.1.y/drivers/input/touchscreen/mini2451_1wire_host.c	2015-09-05 13:50:03.511515232 -0700
 @@ -40,6 +40,7 @@
  #include <linux/clk.h>
  #include <linux/gpio.h>
  #include <linux/pwm.h>
-+#include<linux/slab.h>
++#include <linux/slab.h>
  
  #include <linux/platform_data/touchscreen-one-wire.h>
  #include <plat/gpio-cfg.h>
-@@ -62,69 +63,14 @@
+@@ -62,69 +63,14 @@ static struct pwm_device *pwm;
  // Touch Screen driver interface
  
  static DECLARE_WAIT_QUEUE_HEAD(ts_waitq);
@@ -110,7 +82,7 @@
  
  //---------------------------------------------------------
  // backlight
-@@ -286,6 +232,7 @@
+@@ -286,6 +232,7 @@ static unsigned last_req, last_res;
  
  static void one_wire_session_complete(unsigned char req, unsigned int res)
  {
@@ -118,7 +90,7 @@
  	unsigned char crc;
  	const unsigned char *p = (const unsigned char*)&res;
  
-@@ -312,8 +259,11 @@
+@@ -312,8 +259,11 @@ static void one_wire_session_complete(un
  				unsigned pressed;
  				x =  ((p[3] >>   4U) << 8U) + p[2];
  				y =  ((p[3] &  0xFU) << 8U) + p[1];
@@ -132,7 +104,7 @@
  			}
  			break;
  
-@@ -524,6 +474,8 @@
+@@ -524,6 +474,8 @@ static struct timer_list one_wire_timer
  static int ts_1wire_probe(struct platform_device *pdev)
  {
  	int ret;
@@ -141,7 +113,7 @@
  
  	pdata = dev_get_platdata(&pdev->dev);
  	if (!pdata) {
-@@ -531,6 +483,13 @@
+@@ -531,6 +483,13 @@ static int ts_1wire_probe(struct platfor
  		return -EINVAL;
  	}
  
@@ -155,7 +127,7 @@
  	ret = gpio_request(pdata->gpio, TOUCH_DEVICE_NAME);
  	if (ret) {
  		dev_err(&pdev->dev, "failed to request gpio %d\n", pdata->gpio);
-@@ -568,6 +527,41 @@
+@@ -568,6 +527,41 @@ static int ts_1wire_probe(struct platfor
  
  	enable_tint();
  
@@ -197,7 +169,16 @@
  	return 0;
  
  err_timer:
-@@ -597,8 +596,6 @@
+@@ -587,7 +581,7 @@ static int ts_1wire_remove(struct platfo
+ 	free_irq(pdata->timer_irq, &timer_for_1wire_irq);
+ 
+ 	pwm_free(pwm);
+-
++	kfree(_tsi);
+ 	set_pin_value(0);
+ 	gpio_free(pdata->gpio);
+ 
+@@ -597,8 +591,6 @@ static int ts_1wire_remove(struct platfo
  #ifdef CONFIG_PM
  static int ts_1wire_suspend(struct device *dev)
  {
@@ -206,7 +187,7 @@
  	printk("ts_1wire_suspend: before \n");
  
  	del_timer_sync(&one_wire_timer);
-@@ -707,12 +704,6 @@
+@@ -707,12 +699,6 @@ static int __init onewire_dev_init(void)
  {
  	int ret;
  
@@ -219,7 +200,7 @@
  	ret = misc_register(&bl_misc);
  	if (ret)
  		goto fail_bl;
-@@ -738,8 +729,6 @@
+@@ -738,8 +724,6 @@ static int __init onewire_dev_init(void)
  fail_drv:
  	misc_deregister(&bl_misc);
  fail_bl:
@@ -228,18 +209,49 @@
  	return ret;
  }
  
-@@ -750,7 +739,6 @@
+@@ -750,7 +734,6 @@ static void __exit onewire_dev_exit(void
  
  	remove_proc_entry("driver/one-wire-info", NULL);
  
 -	misc_deregister(&ts_misc);
  	misc_deregister(&bl_misc);
  }
-
-diff -uNr linux-4.x.y/net/wireless/reg.c linux-nanopi-v4.1.y/net/wireless/reg.c
---- linux-4.x.y/net/wireless/reg.c	2015-08-23 13:02:15.414327565 -0700
-+++ linux-nanopi-v4.1.y/net/wireless/reg.c	2015-08-23 12:51:34.002338751 -0700
-@@ -136,7 +136,7 @@
+ 
+diff -rup linux-nanopi-v4.1.y.orig/drivers/net/wireless/bcm4336/dhd_config.c linux-nanopi-v4.1.y/drivers/net/wireless/bcm4336/dhd_config.c
+--- linux-nanopi-v4.1.y.orig/drivers/net/wireless/bcm4336/dhd_config.c	2015-08-12 01:38:07.000000000 -0700
++++ linux-nanopi-v4.1.y/drivers/net/wireless/bcm4336/dhd_config.c	2015-09-05 13:33:54.574961800 -0700
+@@ -1059,6 +1059,7 @@ dhd_conf_read_log_level(dhd_pub_t *dhd,
+ 	}
+ #endif
+ 
++#ifdef DHD_DEBUG
+ 	/* Process dhd_console_ms */
+ 	memset(pick, 0, MAXSZ_BUF);
+ 	len_val = process_config_vars(bufp, len, pick, "dhd_console_ms=");
+@@ -1066,6 +1067,7 @@ dhd_conf_read_log_level(dhd_pub_t *dhd,
+ 		dhd_console_ms = (int)simple_strtol(pick, NULL, 0);
+ 		printf("%s: dhd_console_ms = 0x%X\n", __FUNCTION__, dhd_console_ms);
+ 	}
++#endif
+ }
+ 
+ void
+diff -rup linux-nanopi-v4.1.y.orig/drivers/net/wireless/bcm4336/Makefile linux-nanopi-v4.1.y/drivers/net/wireless/bcm4336/Makefile
+--- linux-nanopi-v4.1.y.orig/drivers/net/wireless/bcm4336/Makefile	2015-08-12 01:38:07.000000000 -0700
++++ linux-nanopi-v4.1.y/drivers/net/wireless/bcm4336/Makefile	2015-09-05 13:33:54.574961800 -0700
+@@ -3,7 +3,7 @@
+ #    otherwise please remove it.
+ DHDCFLAGS = -Wall -Wstrict-prototypes -Dlinux -DBCMDRIVER                \
+ 	-DBCMDONGLEHOST -DUNRELEASEDCHIP -DBCMDMA32 -DBCMFILEIMAGE            \
+-	-DDHDTHREAD -DDHD_DEBUG -DSHOW_EVENTS -DBCMDBG                        \
++	-DDHDTHREAD -DSHOW_EVENTS -DBCMDBG                        \
+ 	-DWIFI_ACT_FRAME -DARP_OFFLOAD_SUPPORT                                \
+ 	-DKEEP_ALIVE -DPKT_FILTER_SUPPORT                                     \
+ 	-DEMBEDDED_PLATFORM -DENABLE_INSMOD_NO_FW_LOAD -DPNO_SUPPORT          \
+diff -rup linux-nanopi-v4.1.y.orig/net/wireless/reg.c linux-nanopi-v4.1.y/net/wireless/reg.c
+--- linux-nanopi-v4.1.y.orig/net/wireless/reg.c	2015-08-12 01:38:07.000000000 -0700
++++ linux-nanopi-v4.1.y/net/wireless/reg.c	2015-09-05 13:33:54.574961800 -0700
+@@ -136,7 +136,7 @@ static spinlock_t reg_indoor_lock;
  static u32 reg_is_indoor_portid;
  
  /* Max number of consecutive attempts to communicate with CRDA  */
