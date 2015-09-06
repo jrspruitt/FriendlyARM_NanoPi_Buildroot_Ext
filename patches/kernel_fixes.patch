@@ -1,6 +1,6 @@
 diff -rup linux-nanopi-v4.1.y.orig/drivers/input/touchscreen/mini2451_1wire_host.c linux-nanopi-v4.1.y/drivers/input/touchscreen/mini2451_1wire_host.c
 --- linux-nanopi-v4.1.y.orig/drivers/input/touchscreen/mini2451_1wire_host.c	2015-08-12 01:38:07.000000000 -0700
-+++ linux-nanopi-v4.1.y/drivers/input/touchscreen/mini2451_1wire_host.c	2015-09-05 13:50:03.511515232 -0700
++++ linux-nanopi-v4.1.y/drivers/input/touchscreen/mini2451_1wire_host.c	2015-09-06 01:24:40.495808769 -0700
 @@ -40,6 +40,7 @@
  #include <linux/clk.h>
  #include <linux/gpio.h>
@@ -219,7 +219,7 @@ diff -rup linux-nanopi-v4.1.y.orig/drivers/input/touchscreen/mini2451_1wire_host
  
 diff -rup linux-nanopi-v4.1.y.orig/drivers/net/wireless/bcm4336/dhd_config.c linux-nanopi-v4.1.y/drivers/net/wireless/bcm4336/dhd_config.c
 --- linux-nanopi-v4.1.y.orig/drivers/net/wireless/bcm4336/dhd_config.c	2015-08-12 01:38:07.000000000 -0700
-+++ linux-nanopi-v4.1.y/drivers/net/wireless/bcm4336/dhd_config.c	2015-09-05 13:33:54.574961800 -0700
++++ linux-nanopi-v4.1.y/drivers/net/wireless/bcm4336/dhd_config.c	2015-09-06 01:24:40.495808769 -0700
 @@ -1059,6 +1059,7 @@ dhd_conf_read_log_level(dhd_pub_t *dhd,
  	}
  #endif
@@ -238,7 +238,7 @@ diff -rup linux-nanopi-v4.1.y.orig/drivers/net/wireless/bcm4336/dhd_config.c lin
  void
 diff -rup linux-nanopi-v4.1.y.orig/drivers/net/wireless/bcm4336/Makefile linux-nanopi-v4.1.y/drivers/net/wireless/bcm4336/Makefile
 --- linux-nanopi-v4.1.y.orig/drivers/net/wireless/bcm4336/Makefile	2015-08-12 01:38:07.000000000 -0700
-+++ linux-nanopi-v4.1.y/drivers/net/wireless/bcm4336/Makefile	2015-09-05 13:33:54.574961800 -0700
++++ linux-nanopi-v4.1.y/drivers/net/wireless/bcm4336/Makefile	2015-09-06 01:24:40.495808769 -0700
 @@ -3,7 +3,7 @@
  #    otherwise please remove it.
  DHDCFLAGS = -Wall -Wstrict-prototypes -Dlinux -DBCMDRIVER                \
@@ -248,9 +248,39 @@ diff -rup linux-nanopi-v4.1.y.orig/drivers/net/wireless/bcm4336/Makefile linux-n
  	-DWIFI_ACT_FRAME -DARP_OFFLOAD_SUPPORT                                \
  	-DKEEP_ALIVE -DPKT_FILTER_SUPPORT                                     \
  	-DEMBEDDED_PLATFORM -DENABLE_INSMOD_NO_FW_LOAD -DPNO_SUPPORT          \
+diff -rup linux-nanopi-v4.1.y.orig/drivers/pwm/pwm-samsung.c linux-nanopi-v4.1.y/drivers/pwm/pwm-samsung.c
+--- linux-nanopi-v4.1.y.orig/drivers/pwm/pwm-samsung.c	2015-08-12 01:38:07.000000000 -0700
++++ linux-nanopi-v4.1.y/drivers/pwm/pwm-samsung.c	2015-09-06 01:35:11.339813384 -0700
+@@ -37,6 +37,7 @@
+ 
+ #define TCFG0_PRESCALER_MASK		0xff
+ #define TCFG0_PRESCALER1_SHIFT		8
++#define TCFG0_PRESCALER_VALUE       32
+ 
+ #define TCFG1_MUX_MASK			0xf
+ #define TCFG1_SHIFT(chan)		(4 * (chan))
+@@ -497,6 +498,7 @@ static int pwm_samsung_probe(struct plat
+ 	struct resource *res;
+ 	unsigned int chan;
+ 	int ret;
++    u32 prescaler;
+ 
+ 	chip = devm_kzalloc(&pdev->dev, sizeof(*chip), GFP_KERNEL);
+ 	if (chip == NULL)
+@@ -564,6 +566,10 @@ static int pwm_samsung_probe(struct plat
+ 		!IS_ERR(chip->tclk0) ? clk_get_rate(chip->tclk0) : 0,
+ 		!IS_ERR(chip->tclk1) ? clk_get_rate(chip->tclk1) : 0);
+ 
++    prescaler = readl(chip->base + REG_TCFG0);
++    prescaler &= ~(0xFF);
++    prescaler |= TCFG0_PRESCALER_VALUE;
++    writel(prescaler, chip->base + REG_TCFG0);
+ 	return 0;
+ }
+ 
 diff -rup linux-nanopi-v4.1.y.orig/net/wireless/reg.c linux-nanopi-v4.1.y/net/wireless/reg.c
 --- linux-nanopi-v4.1.y.orig/net/wireless/reg.c	2015-08-12 01:38:07.000000000 -0700
-+++ linux-nanopi-v4.1.y/net/wireless/reg.c	2015-09-05 13:33:54.574961800 -0700
++++ linux-nanopi-v4.1.y/net/wireless/reg.c	2015-09-06 01:24:40.495808769 -0700
 @@ -136,7 +136,7 @@ static spinlock_t reg_indoor_lock;
  static u32 reg_is_indoor_portid;
  
