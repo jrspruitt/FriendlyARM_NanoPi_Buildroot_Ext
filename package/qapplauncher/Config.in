@@ -1,6 +1,6 @@
 menu "QAppLauncher"
 config BR2_PACKAGE_QAPPLAUNCHER
-	bool "qapplauncher"
+	bool "QAppLauncher"
 	depends on BR2_PACKAGE_QT && \
 		(BR2_PACKAGE_QT_SYSTEMPNG || BR2_PACKAGE_QT_QTPNG) && \
 		BR2_PACKAGE_QT_MOUSE_TSLIB

@@ -24,7 +24,7 @@ endef
 
 define QAPPLAUNCHER_INSTALL_TARGET_CMDS
 	cp -dpfr $(@D)/QAppLauncher $(TARGET_DIR)/opt/QAppLauncher
-	cp -dpfr $(@D)/QAppConfig $(TARGET_DIR)/opt/
+	cp -dpfr $(@D)/QAppConfig $(TARGET_DIR)/opt/QAppConfig
 	$(INSTALL) -m 0755 -D $(BR2_EXTERNAL)/package/qapplauncher/S70QAppLauncher $(TARGET_DIR)/etc/init.d/S70QAppLauncher
 	mkdir -p $(TARGET_DIR)/etc/profile.d/
 	$(INSTALL) -m 0755 -D $(BR2_EXTERNAL)/package/qapplauncher/qapplauncher.sh $(TARGET_DIR)/etc/profile.d/qapplauncher.sh
