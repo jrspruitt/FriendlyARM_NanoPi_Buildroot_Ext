@@ -16,7 +16,7 @@ define FGPIO_DEMO_INSTALL_TARGET_CMDS
 	cp -dpfr $(BR2_EXTERNAL)/package/fgpio_demo/logo.png $(TARGET_DIR)/opt/fgpio_demo/logo.png
 	cp -dpfr $(@D)/run_demo.py $(TARGET_DIR)/opt/fgpio_demo/run_demo.py
 	cp -dpfr $(@D)/demo_ui.py $(TARGET_DIR)/opt/fgpio_demo/demo_ui.py
-	python $(BR2_EXTERNAL)/package/qapplauncher/qapp_adder.py $(TARGET_DIR) /opt/QAppConfig/settings/default.ini /opt/fgpio_demo/run_demo.py
+	python $(BR2_EXTERNAL)/package/qapplauncher/qapp_adder.py $(TARGET_DIR) /opt/QAppConfig/QAppLauncher/settings/default.ini /opt/fgpio_demo/run_demo.py
 endef
 
 $(eval $(generic-package))
