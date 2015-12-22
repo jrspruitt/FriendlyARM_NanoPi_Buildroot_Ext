@@ -1,10 +1,10 @@
 config BR2_PACKAGE_FGPIO
-	bool "Python GPIO"
+	bool "FriendlyARM Python GPIO"
 	depends on BR2_PACKAGE_PYTHON
 	help
 	  Simple GPIO interface for FriendlyARM boards.
 
 	  https://github.com/jrspruitt/FriendlyARM_Python_GPIO
 
-comment "Requires Python"
-	depends on BR2_PACKAGE_PYTHON
+comment "fgpio requires build w/ Python"
+	depends on !BR2_PACKAGE_PYTHON

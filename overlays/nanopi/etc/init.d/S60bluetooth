@@ -10,6 +10,8 @@ case "$1" in
   start)
         echo "Starting bluetooth..."
         echo > /dev/ttySAC1 #Hack for false starts.
+        rfkill block 0
+        rfkill unblock 0
         brcm_patchram_plus --patchram /lib/firmware/ap6210/bcm20702a.hcd --bd_addr $MAC_ADDR --no2bytes --tosleep 5000 $DEVICE >/dev/null 2>&1 
 	    hciattach -p $DEVICE any | tail -n 1 > $PID_FILE
         hciconfig hci0 up

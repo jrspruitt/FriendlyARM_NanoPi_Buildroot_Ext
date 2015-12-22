@@ -14,13 +14,10 @@ choice
 	prompt "LCD Size"
 	config BR2_PACKAGE_QAPPLAUNCHER_LCD35
 		bool "3.5 Inch"
-		default y
 	config BR2_PACKAGE_QAPPLAUNCHER_LCD43
 		bool "4.3 Inch"
-		default n
 	config BR2_PACKAGE_QAPPLAUNCHER_LCD7
 		bool "7 Inch"
-		default n
 endchoice
 endif
 endmenu
