@@ -20,3 +20,11 @@ AVAHID_CONFIG=$TARGET_DIR/etc/avahi/avahi-daemon.conf
 if [ -f $AVAHID_CONFIG ]; then
     sed -i 's/#deny-interfaces=eth1/deny-interfaces=wlan0/g' $AVAHID_CONFIG
 fi
+
+QT_PROFILE=$TARGET_DIR/etc/profile.d/qapplauncher.sh
+
+if [ -f $QT_PROFILE ]; then
+    if [ $BOARD_NAME == "nanopi2" ]; then
+        sed -i 's/event0/event1/g' $QT_PROFILE
+    fi
+fi
